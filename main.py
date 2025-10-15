@@ -617,11 +617,11 @@ class TGBot:
                                               message_thread_id=message.message_thread_id)
                         return
                 else:
-                    self.bot.send_message(self.group_id, _("Chat not found, please remove this topic manually"),
-                                          message_thread_id=message.message_thread_id)
-                    try:
-                        close_forum_topic(chat_id=self.group_id, message_thread_id=message.message_thread_id,
-                                          token=self.bot.token)
+                    #self.bot.send_message(self.group_id, _("Chat not found, please remove this topic manually"),
+                    #                      message_thread_id=message.message_thread_id)
+                    #try:
+                    #    close_forum_topic(chat_id=self.group_id, message_thread_id=message.message_thread_id,
+                    #                      token=self.bot.token)
                     except ApiTelegramException as e:
                         pass
 
