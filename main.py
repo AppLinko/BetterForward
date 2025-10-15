@@ -622,8 +622,8 @@ class TGBot:
                     #try:
                     #    close_forum_topic(chat_id=self.group_id, message_thread_id=message.message_thread_id,
                     #                      token=self.bot.token)
-                    except ApiTelegramException as e:
-                        pass
+                    ##except ApiTelegramException as e:
+                    pass
 
     # Process messages in the queue
     def process_messages(self):
