@@ -611,41 +611,6 @@ class AdminHandler:
             chat_id=self.group_id, message_thread_id=None)
         self.bot.register_next_step_handler(msg, self.handle_broadcast_message)
 
-    def show_host_ip(self, message: Message):
-        """Show host IP information."""
-        if not self.check_valid_chat(message):
-            return
-        try:
-            headers = {
-                "User-Agent": "curl/8.4.0",
-                "Accept": "*/*"
-            }
-            with httpx.Client(http2=True, headers=headers, verify=True) as client:
-                res = client.get("https://ipapi.co/json", timeout=5)
-            res.raise_for_status()
-            data = res.json()
-            ip = data.get('ip', _('Unknown'))
-            country = data.get('country_name', _('Unknown'))
-            city = data.get('city', _('Unknown'))
-        except httpx.HTTPStatusError as e:
-            logger.error(f"Failed to retrieve IP information: {e}")
-            self.bot.send_message(self.group_id, _("Failed to retrieve IP information"))
-            return
-        except httpx.RequestError as e:
-            logger.error(f"Failed to retrieve IP information: {e}")
-            self.bot.send_message(self.group_id, _("Failed to retrieve IP information"))
-            return
-        markup = types.InlineKeyboardMarkup()
-        markup.add(types.InlineKeyboardButton("⬅️" + _("Back"),
-                                                callback_data=json.dumps({"action": "menu"})))
-        self.bot.send_message(text=_("Host IP Information") + "\n\n" +
-                                _("IP Address: {}").format(ip) + "\n" +
-                                _("Country: {}").format(country) + "\n" +
-                                _("City: {}").format(city),
-                                chat_id=message.chat.id,
-                                message_thread_id=None,
-                                reply_markup=markup)
-
     def handle_broadcast_message(self, message: Message):
         """Handle broadcast message content."""
         if (isinstance(message.text, str) and message.text.startswith("/cancel")) or \
