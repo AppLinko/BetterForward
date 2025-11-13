@@ -16,7 +16,7 @@ class MessageHandler:
     """Handles message forwarding between users and group."""
 
     def __init__(self, bot, group_id: int, db_path: str, cache, captcha_manager, auto_response_manager,
-                 spam_detector_manager=None, bot_instance=None):
+                 spam_detector_manager=None, bot_instance=None, success_reply_image_file_id=None):
         self.bot = bot
         self.group_id = group_id
         self.db_path = db_path
@@ -25,6 +25,7 @@ class MessageHandler:
         self.auto_response_manager = auto_response_manager
         self.spam_detector_manager = spam_detector_manager
         self.bot_instance = bot_instance
+        self.success_reply_image_file_id = success_reply_image_file_id
 
     def check_valid_chat(self, message: Message) -> bool:
         """Check if message is in valid chat context."""
@@ -213,10 +214,21 @@ class MessageHandler:
             self.bot.send_message(self.group_id, _("[Auto Response]") + auto_response,
                                   message_thread_id=thread_id)
 
+        self._send_success_reply_image(message.chat.id)
+
         # Log processing time
         processing_time = (time.time() - start_time) * 1000  # Convert to milliseconds
         logger.info(_("Message from user {} processed in {:.2f}ms").format(
             message.from_user.id, processing_time))
+
+    def _send_success_reply_image(self, chat_id: int):
+        """发送转发成功后回复的图片给用户"""
+        if self.success_reply_image_file_id:
+            try:
+                self.bot.send_photo(chat_id, photo=self.success_reply_image_file_id)
+                logger.info(_("Successfully sent reply image to user {}").format(chat_id))
+            except Exception as e:
+                logger.error(_("Failed to send reply image to user {}: {}").format(chat_id, str(e)))
 
     def _check_captcha(self, message: Message, cursor, db) -> bool:
         """Check and handle captcha verification."""
