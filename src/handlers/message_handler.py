@@ -226,8 +226,10 @@ class MessageHandler:
         """发送转发成功后回复的图片给用户"""
         if self.success_reply_image_file_id:
             try:
-                self.bot.send_photo(chat_id, photo=self.success_reply_image_file_id)
+                # 发送图片并保存返回的消息对象
+                sent_msg = self.bot.send_photo(chat_id, photo=self.success_reply_image_file_id)
                 logger.info(_("Successfully sent reply image to user {}").format(chat_id))
+
                 # 3秒后自动删除该图片消息
                 import threading
                 def delete_later(chat_id, message_id):
@@ -236,7 +238,7 @@ class MessageHandler:
                     except Exception as e:
                         logger.warning(_("Failed to delete auto-reply image for user {}: {}").format(chat_id, str(e)))
 
-                timer = threading.Timer(3.0, delete_later, args=[chat_id, message_id])
+                timer = threading.Timer(3.0, delete_later, args=[sent_msg.chat.id, sent_msg.message_id])
                 timer.daemon = True  # 防止阻塞主线程退出
                 timer.start()
             except Exception as e:
