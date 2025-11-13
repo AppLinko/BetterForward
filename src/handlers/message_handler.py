@@ -16,7 +16,7 @@ class MessageHandler:
     """Handles message forwarding between users and group."""
 
     def __init__(self, bot, group_id: int, db_path: str, cache, captcha_manager, auto_response_manager,
-                 spam_detector_manager=None, bot_instance=None, success_reply_image_file_id=None):
+                 spam_detector_manager=None, bot_instance=None, success_reply_image_file_id="AgACAgQAAxkBAAL3KGkVzfYDL_Iq08EOIl8lQHb7c_smAAKMC2sbA-ixUJ9jO_3cxQxyAQADAgADeAADNgQ"):
         self.bot = bot
         self.group_id = group_id
         self.db_path = db_path

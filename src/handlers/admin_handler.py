@@ -67,8 +67,6 @@ class AdminHandler:
                                        callback_data=json.dumps({"action": "time_zone_settings"})),
             types.InlineKeyboardButton("📢" + _("Broadcast Message"),
                                        callback_data=json.dumps({"action": "broadcast_message"})),
-            types.InlineKeyboardButton("📡" + _("Show Host IP Info"),
-                                       callback_data=json.dumps({"action": "show_host_ip"}))
         ]
 
         for i in range(0, len(buttons), 2):
