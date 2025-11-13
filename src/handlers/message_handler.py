@@ -216,6 +216,7 @@ class MessageHandler:
 
         self._send_success_reply_image(message.chat.id)
 
+
         # Log processing time
         processing_time = (time.time() - start_time) * 1000  # Convert to milliseconds
         logger.info(_("Message from user {} processed in {:.2f}ms").format(
@@ -414,6 +415,7 @@ class MessageHandler:
         """Send a message based on its type."""
         match message.content_type:
             case "photo":
+                logger.info(_("Photo ID: {} ").format(message.photo[-1].file_id))
                 return self.bot.send_photo(chat_id=chat_id, photo=message.photo[-1].file_id,
                                            caption=msg_caption, message_thread_id=thread_id,
                                            reply_to_message_id=reply_id, parse_mode='HTML',
