@@ -301,7 +301,7 @@ class MessageHandler:
                     username = _("Not set") if message.from_user.username is None else f"@{message.from_user.username}"
                     last_name = "" if message.from_user.last_name is None else f" {message.from_user.last_name}"
                     pin_message = self.bot.send_message(self.group_id,
-                                                        f"User ID: [{userid}](tg://openmessage?user_id={userid})\n"
+                                                        f"User ID: [{userid}](tg://user?id={userid})\n"
                                                         f"Full Name: {escape_markdown(f'{message.from_user.first_name}{last_name}')}\n"
                                                         f"Username: {escape_markdown(username)}\n",
                                                         message_thread_id=thread_id, parse_mode='markdown')
@@ -366,6 +366,7 @@ class MessageHandler:
                                       _("[Alert]") + _("Failed to forward message to user {}").format(
                                           user_id) + "\n" + str(e),
                                       message_thread_id=message.message_thread_id)
+        '''
         else:
             self.bot.send_message(self.group_id, _("Chat not found, please remove this topic manually"),
                                   message_thread_id=message.message_thread_id)
@@ -375,6 +376,7 @@ class MessageHandler:
                                   token=self.bot.token)
             except ApiTelegramException:
                 pass
+        '''
 
     def _get_reply_id(self, message: Message, topic_id: int, cursor, in_group: bool):
         """Get the reply message ID if replying to a message."""
