@@ -141,7 +141,7 @@ class TGBot:
     def _set_bot_commands(self):
         """Set bot commands for different scopes."""
         self.bot.set_my_commands([
-            types.BotCommand("delete", _("Delete a message")),
+            #types.BotCommand("delete", _("Delete a message")),
             types.BotCommand("help", _("Show help")),
         ], scope=types.BotCommandScopeAllPrivateChats())
 
