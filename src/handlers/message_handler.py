@@ -213,6 +213,27 @@ class MessageHandler:
             self.bot.send_message(self.group_id, _("[Auto Response]") + auto_response,
                                   message_thread_id=thread_id)
 
+        # Send Forward Success Message
+        if self.cache.get("setting_forward_success_msg_enabled") == "enable":
+            reply_message = self.cache.get("setting_forward_success_msg")
+            if reply_message:
+                try:
+                    sent_msg = self.bot.send_message(message.chat.id, reply_message)
+                    logger.info(_("Sent auto-reply to user {}").format(message.from_user.id))
+                    import threading
+                    def delete_later(chat_id, message_id):
+                        try:
+                            self.bot.delete_message(chat_id=chat_id, message_id=message_id)
+                        except Exception as e:
+                            logger.warning(_("Failed to delete auto-reply image for user {}: {}").format(chat_id, str(e)))
+
+                    timer = threading.Timer(3.0, delete_later, args=[sent_msg.chat.id, sent_msg.message_id])
+                    timer.daemon = True  # 防止阻塞主线程退出
+                    timer.start()
+                except Exception as e:
+                    logger.error(_("Failed to send auto-reply to user {}: {}").format(
+                        message.from_user.id, str(e)))
+
         # Log processing time
         processing_time = (time.time() - start_time) * 1000  # Convert to milliseconds
         logger.info(_("Message from user {} processed in {:.2f}ms").format(
@@ -366,7 +387,6 @@ class MessageHandler:
                                       _("[Alert]") + _("Failed to forward message to user {}").format(
                                           user_id) + "\n" + str(e),
                                       message_thread_id=message.message_thread_id)
-        '''
         else:
             self.bot.send_message(self.group_id, _("Chat not found, please remove this topic manually"),
                                   message_thread_id=message.message_thread_id)
@@ -376,7 +396,6 @@ class MessageHandler:
                                   token=self.bot.token)
             except ApiTelegramException:
                 pass
-        '''
 
     def _get_reply_id(self, message: Message, topic_id: int, cursor, in_group: bool):
         """Get the reply message ID if replying to a message."""

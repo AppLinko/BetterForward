@@ -248,9 +248,6 @@ class CommandHandler:
         if message.reply_to_message is None:
             self.bot.reply_to(message, _("Please reply to the message you want to delete"))
             return
-        if message.chat.id != self.group_id:
-            self.bot.send_message(message.chat.id, _("This command is only available to admin users."))
-            return
 
         msg_id = message.reply_to_message.message_id
         with sqlite3.connect(self.db_path) as db:
